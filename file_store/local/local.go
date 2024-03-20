@@ -13,7 +13,6 @@ import (
 
 	"github.com/baowk/dilu-core/common/utils/cryptos"
 	"github.com/baowk/dilu-core/core"
-	"go.uber.org/zap"
 )
 
 func New(cfg *config.FSCfg) *Local {
@@ -43,7 +42,7 @@ func (e *Local) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 	// 尝试创建此路径
 	mkdirErr := os.MkdirAll(e.cfg.StorePath, os.ModePerm)
 	if mkdirErr != nil {
-		core.Log.Error("function os.MkdirAll() Filed", zap.Any("err", mkdirErr.Error()))
+		core.Log.Error("function os.MkdirAll() Filed", mkdirErr)
 		err = mkdirErr
 		return
 	}
@@ -53,7 +52,7 @@ func (e *Local) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 
 	f, openError := file.Open() // 读取文件
 	if openError != nil {
-		core.Log.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
+		core.Log.Error("function file.Open() Filed", openError)
 		err = openError
 		return
 	}
@@ -61,7 +60,7 @@ func (e *Local) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 
 	out, createErr := os.Create(p)
 	if createErr != nil {
-		core.Log.Error("function os.Create() Filed", zap.Any("err", createErr.Error()))
+		core.Log.Error("function os.Create() Filed", createErr)
 		err = createErr
 		return
 	}
@@ -69,7 +68,7 @@ func (e *Local) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 
 	_, copyErr := io.Copy(out, f) // 传输（拷贝）文件
 	if copyErr != nil {
-		core.Log.Error("function io.Copy() Filed", zap.Any("err", copyErr.Error()))
+		core.Log.Error("function io.Copy() Filed", copyErr)
 		err = copyErr
 		return
 	}

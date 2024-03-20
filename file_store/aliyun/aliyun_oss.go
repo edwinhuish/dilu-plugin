@@ -9,7 +9,6 @@ import (
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/baowk/dilu-core/core"
-	"go.uber.org/zap"
 )
 
 func New(cfg *config.FSCfg) *AliyunOSS {
@@ -25,7 +24,7 @@ type AliyunOSS struct {
 func (e *AliyunOSS) UploadFile(file *multipart.FileHeader) (filePath string, fileKey string, err error) {
 	bucket, err := NewBucket(e.cfg)
 	if err != nil {
-		core.Log.Error("function AliyunOSS.NewBucket() Failed", zap.Any("err", err.Error()))
+		core.Log.Error("function AliyunOSS.NewBucket() Failed", err)
 		err = errors.New("function AliyunOSS.NewBucket() Failed, err:" + err.Error())
 		return
 	}
@@ -33,7 +32,7 @@ func (e *AliyunOSS) UploadFile(file *multipart.FileHeader) (filePath string, fil
 	// 读取本地文件。
 	f, openError := file.Open()
 	if openError != nil {
-		core.Log.Error("function file.Open() Failed", zap.Any("err", openError.Error()))
+		core.Log.Error("function file.Open() Failed", openError)
 		err = errors.New("function file.Open() Failed, err:" + openError.Error())
 		return
 	}
@@ -45,7 +44,7 @@ func (e *AliyunOSS) UploadFile(file *multipart.FileHeader) (filePath string, fil
 	// 上传文件流。
 	err = bucket.PutObject(yunFileTmpPath, f)
 	if err != nil {
-		core.Log.Error("function formUploader.Put() Failed", zap.Any("err", err.Error()))
+		core.Log.Error("function formUploader.Put() Failed", err)
 		err = errors.New("function formUploader.Put() Failed, err:" + err.Error())
 		return
 	}
@@ -58,7 +57,7 @@ func (e *AliyunOSS) UploadFile(file *multipart.FileHeader) (filePath string, fil
 func (e *AliyunOSS) DeleteFile(key string) error {
 	bucket, err := NewBucket(e.cfg)
 	if err != nil {
-		core.Log.Error("function AliyunOSS.NewBucket() Failed", zap.Any("err", err.Error()))
+		core.Log.Error("function AliyunOSS.NewBucket() Failed", err)
 		return errors.New("function AliyunOSS.NewBucket() Failed, err:" + err.Error())
 	}
 
@@ -66,7 +65,7 @@ func (e *AliyunOSS) DeleteFile(key string) error {
 	// 如需删除文件夹，请将objectName设置为对应的文件夹名称。如果文件夹非空，则需要将文件夹下的所有object删除后才能删除该文件夹。
 	err = bucket.DeleteObject(key)
 	if err != nil {
-		core.Log.Error("function bucketManager.Delete() Filed", zap.Any("err", err.Error()))
+		core.Log.Error("function bucketManager.Delete() Filed", err)
 		return errors.New("function bucketManager.Delete() Filed, err:" + err.Error())
 	}
 

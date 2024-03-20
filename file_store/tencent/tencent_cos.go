@@ -14,7 +14,6 @@ import (
 	"github.com/baowk/dilu-core/core"
 
 	"github.com/tencentyun/cos-go-sdk-v5"
-	"go.uber.org/zap"
 )
 
 func New(cfg *config.FSCfg) *TencentCOS {
@@ -32,7 +31,7 @@ func (e *TencentCOS) UploadFile(file *multipart.FileHeader) (filePath string, fi
 	client := NewClient(e.cfg)
 	f, openError := file.Open()
 	if openError != nil {
-		core.Log.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
+		core.Log.Error("function file.Open() Filed", openError)
 		err = errors.New("function file.Open() Filed, err:" + openError.Error())
 		return
 	}
@@ -53,7 +52,7 @@ func (e *TencentCOS) DeleteFile(key string) error {
 	name := e.cfg.PathPrefix + "/" + key
 	_, err := client.Object.Delete(context.Background(), name)
 	if err != nil {
-		core.Log.Error("function bucketManager.Delete() Filed", zap.Any("err", err.Error()))
+		core.Log.Error("function bucketManager.Delete() Filed", err)
 		return errors.New("function bucketManager.Delete() Filed, err:" + err.Error())
 	}
 	return nil

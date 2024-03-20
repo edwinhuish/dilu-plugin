@@ -12,7 +12,6 @@ import (
 	"github.com/baowk/dilu-core/core"
 	"github.com/qiniu/api.v7/v7/auth/qbox"
 	"github.com/qiniu/api.v7/v7/storage"
-	"go.uber.org/zap"
 )
 
 func New(cfg *config.FSCfg) *Qiniu {
@@ -45,7 +44,7 @@ func (e *Qiniu) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 
 	f, openError := file.Open()
 	if openError != nil {
-		core.Log.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
+		core.Log.Error("function file.Open() Filed", openError)
 		err = errors.New("function file.Open() Filed, err:" + openError.Error())
 		return
 	}
@@ -53,7 +52,7 @@ func (e *Qiniu) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 	fileKey = fmt.Sprintf("%d%s", time.Now().Unix(), file.Filename) // 文件名格式 自己可以改 建议保证唯一性
 	putErr := formUploader.Put(context.Background(), &ret, upToken, fileKey, f, file.Size, &putExtra)
 	if putErr != nil {
-		core.Log.Error("function formUploader.Put() Filed", zap.Any("err", putErr.Error()))
+		core.Log.Error("function formUploader.Put() Filed", putErr)
 		err = errors.New("function formUploader.Put() Filed, err:" + putErr.Error())
 		return
 	}
@@ -76,7 +75,7 @@ func (e *Qiniu) DeleteFile(key string) error {
 	cfg := e.qiniuConfig()
 	bucketManager := storage.NewBucketManager(mac, cfg)
 	if err := bucketManager.Delete(e.cfg.Bucket, key); err != nil {
-		core.Log.Error("function bucketManager.Delete() Filed", zap.Any("err", err.Error()))
+		core.Log.Error("function bucketManager.Delete() Filed", err)
 		return errors.New("function bucketManager.Delete() Filed, err:" + err.Error())
 	}
 	return nil

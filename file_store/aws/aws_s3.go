@@ -15,7 +15,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"go.uber.org/zap"
 )
 
 func New(cfg *config.FSCfg) *AwsS3 {
@@ -41,7 +40,7 @@ func (e *AwsS3) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 	filename := e.cfg.PathPrefix + "/" + fileKey
 	f, openError := file.Open()
 	if openError != nil {
-		core.Log.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
+		core.Log.Error("function file.Open() Filed", openError)
 		return
 	}
 	defer f.Close() // 创建文件 defer 关闭
@@ -52,7 +51,7 @@ func (e *AwsS3) UploadFile(file *multipart.FileHeader) (filePath string, fileKey
 		Body:   f,
 	})
 	if err != nil {
-		core.Log.Error("function uploader.Upload() Filed", zap.Any("err", err.Error()))
+		core.Log.Error("function uploader.Upload() Filed", err)
 		return
 	}
 
@@ -76,7 +75,7 @@ func (e *AwsS3) DeleteFile(key string) error {
 		Key:    aws.String(filename),
 	})
 	if err != nil {
-		core.Log.Error("function svc.DeleteObject() Filed", zap.Any("err", err.Error()))
+		core.Log.Error("function svc.DeleteObject() Filed", err)
 		return errors.New("function svc.DeleteObject() Filed, err:" + err.Error())
 	}
 
