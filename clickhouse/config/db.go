@@ -6,7 +6,7 @@ import "strings"
 type DBCfg struct {
 	DSN              string `mapstructure:"dsn" json:"dsn" yaml:"dsn"` // 连接参数
 	Addr             string `mapstructure:"addr" json:"addr" yaml:"addr"`
-	Database         string `mapstructure:"datebase" json:"datebase" yaml:"datebase"`
+	Database         string `mapstructure:"database" json:"database" yaml:"database"`
 	Username         string `mapstructure:"username" json:"username" yaml:"username"`
 	Password         string `mapstructure:"password" json:"password" yaml:"password"`
 	Debug            bool   `mapstructure:"de-bug" json:"de_bug" yaml:"de-bug"` // debug模式
